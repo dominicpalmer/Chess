@@ -79,12 +79,12 @@ std::list<Move*>* generateMoves(Board* boardPtr)
 Board* makeMove(Board* boardPtr, Move* movePtr)
 {
     // Update the move count
-    (*boardPtr).moveCountxTwo += 1;
+    (*boardPtr).turns += 1;
 
     // White move
     if ((*boardPtr).whitePieces & (*movePtr).startSquare)
     {
-        (*boardPtr).playerToMove = activePlayerBlack; // Update the player set to make the next move
+        (*boardPtr).activePlayer = activePlayerBlack; // Update the player set to make the next move
         (*movePtr).pieceColour = pieceColourWhite;
         
         if ((*boardPtr).whitePawns & (*movePtr).startSquare)

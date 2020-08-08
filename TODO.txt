@@ -1,5 +1,6 @@
 --------- Board representation ---------
-Finish setPosition (fen parsing)
+Finish setBoard (fen parsing)
+    White queen/king flip needed
 Finish generateMoves
     includes all individual move functions per piece
 Finish makeMove

@@ -10,8 +10,8 @@ namespace boardSpace
 class Board
 {
     public:
-        short int moveCountxTwo; // Number of moves
-        ActivePlayer playerToMove; // Player to move
+        short int turns; // Number of turns
+        ActivePlayer activePlayer; // Player to move next
         bool whiteCanCastleQS; // White's QS castling rights
         bool whiteCanCastleKS; // White's KS castling rights
         bool blackCanCastleQS; // Black's QS castling rights
@@ -40,6 +40,7 @@ class Board
 };
 
 void setBoard(Board* boardPtr, std::istringstream &stream);
+void parseFen(Board* boardPtr, std::istringstream& stream);
 
 }
 
