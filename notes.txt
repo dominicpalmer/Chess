@@ -1,0 +1,14 @@
+--------- Board representation ---------
+Finish setPosition (fen parsing)
+Finish generateMoves
+    includes all individual move functions per piece
+Finish makeMove
+Finish moveToString
+
+--------- Search and evaluation ---------
+Create an evaluation function
+Create a search function
+
+--------- Optimisation ----------
+Update the uci loop to include optional settings
+Review and optimise
