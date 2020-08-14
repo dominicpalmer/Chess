@@ -12,4 +12,5 @@ Create a search function
 
 --------- Optimisation ----------
 Update the uci loop to include optional settings
+Add 50 move rule and 3fr rule
 Review and optimise

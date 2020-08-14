@@ -132,11 +132,11 @@ void parseFen(Board* boardPtr, std::istringstream& stream)
                     }
                 }
 
-            // Enpassant move played
+            // TODO: Enpassant move played
             case (3):
                 break;
 
-            // Moves since 50 move rule reset
+            // TODO: Moves since 50 move rule reset
             case (4): 
                 break;
 
