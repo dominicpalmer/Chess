@@ -10,12 +10,16 @@ namespace boardSpace
 class Board
 {
     public:
-        short int turns; // Number of turns
+        short turns; // Number of turns
+        short fmrCount; // 50 move rule count
         ActivePlayer activePlayer; // Player to move next
-        bool whiteCanCastleQS; // White's QS castling rights
-        bool whiteCanCastleKS; // White's KS castling rights
-        bool blackCanCastleQS; // Black's QS castling rights
-        bool blackCanCastleKS; // Black's KS castling rights
+        std::string enPassantAvailable; // Track validity of enpassant captures
+
+        // Castling rights
+        bool whiteCanCastleQS;
+        bool whiteCanCastleKS;
+        bool blackCanCastleQS;
+        bool blackCanCastleKS;
         
         // Bitboards
         Bitboard whitePawns;
@@ -30,17 +34,13 @@ class Board
         Bitboard blackRooks;
         Bitboard blackQueens;
         Bitboard blackKing;
-        
-        Bitboard whitePieces;
-        Bitboard blackPieces;
-        
-        Bitboard squareOccupied;
 
+        // Default constructor
         Board();
 };
 
-void setBoard(Board* boardPtr, std::istringstream &stream);
 void parseFen(Board* boardPtr, std::istringstream& stream);
+void setBoard(Board* boardPtr, std::istringstream& stream);
 
 }
 

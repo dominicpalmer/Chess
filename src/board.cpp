@@ -12,46 +12,33 @@ namespace boardSpace
 // Initisalise the board to a default state
 Board::Board()
 {
-    short int moveCountxTwo = 0; // Number of moves
-    ActivePlayer playerToMove = activePlayerWhite; // Player to move
-    bool whiteCanCastleQS = true; // White's QS castling rights
-    bool whiteCanCastleKS = true; // White's KS castling rights
-    bool blackCanCastleQS = true; // Black's QS castling rights
-    bool blackCanCastleKS = true; // Black's KS castling rights
+    this->turns = 0;
+    this->fmrCount;
+    this->activePlayer = activePlayerWhite;
+    this->enPassantAvailable = "-";
 
-    whitePawns = 0xFF00;
-    whiteKnights = 0x42; 
-    whiteBishops = 0x24;
-    whiteRooks = 0x81;
-    whiteQueens = 0x10;
-    whiteKing = 0x8;
-    blackPawns = 0xFF000000000000;
-    blackKnights = 0x4200000000000000;
-    blackBishops = 0x2400000000000000;
-    blackRooks = 0x8100000000000000;
-    blackQueens = 0x800000000000000;
-    blackKing = 0x1000000000000000;
+    this->whiteCanCastleQS = true;
+    this->whiteCanCastleKS = true;
+    this->blackCanCastleQS = true;
+    this->blackCanCastleKS = true;
 
-    whitePieces = whitePawns | whiteKnights | whiteBishops | whiteRooks | whiteQueens | whiteKing;
-    blackPieces = blackPawns | blackKnights | blackBishops | blackRooks | blackQueens | blackKing;
-
-    squareOccupied = whitePieces | blackPieces;
+    this->whitePawns = 0xFF00;
+    this->whiteKnights = 0x42; 
+    this->whiteBishops = 0x24;
+    this->whiteRooks = 0x81;
+    this->whiteQueens = 0x8;
+    this->whiteKing = 0x10;
+    this->blackPawns = 0xFF000000000000;
+    this->blackKnights = 0x4200000000000000;
+    this->blackBishops = 0x2400000000000000;
+    this->blackRooks = 0x8100000000000000;
+    this->blackQueens = 0x800000000000000;
+    this->blackKing = 0x1000000000000000;
 }
 
-// TODO: Fen position parser
+// Fen position parser,  e.g: "position fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1"
 void parseFen(Board* boardPtr, std::istringstream& stream)
 {
-    // Example:
-    // "position fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1"
-
-    // Split the fen stream into a vector of whitespace seperated strings
-    std::string buffer;
-    std::vector<std::string> arguments;
-    while (std::getline(stream, buffer, ' '))
-    {
-        arguments.push_back(buffer);
-    }
-
     // Remove all pieces from the default initialised board and set castling rights to false
     (*boardPtr).whitePawns = 0;
     (*boardPtr).whiteKnights = 0;
@@ -70,100 +57,85 @@ void parseFen(Board* boardPtr, std::istringstream& stream)
     (*boardPtr).blackCanCastleKS = false;
     (*boardPtr).blackCanCastleQS = false;
 
-    int argumentsIndex = 0;
+    // Force the stream to treat whitespace as tokens
+    char token;
+    stream >> std::noskipws;
+    stream >> token;
+
+    // Piece placement
     Bitboard shiftCount = 0;
-    for (std::vector<std::string>::iterator it = arguments.begin(); it < arguments.end(); it++)
-    {   
-        switch (argumentsIndex)
+    while (stream >> token && !std::isspace(token))
+    {
+        switch (token)
         {
-            // Piece placement
-            case (0):
-                for (int i = 0; i < (*it).length(); i++)
-                {
-                    switch ((*it)[i])
-                    {
-                        case '8': shiftCount += 8; break;
-                        case '7': shiftCount += 7; break;
-                        case '6': shiftCount += 6; break;
-                        case '5': shiftCount += 5; break;
-                        case '4': shiftCount += 4; break;
-                        case '3': shiftCount += 3; break;
-                        case '2': shiftCount += 2; break;
-                        case '1': shiftCount += 1; break;
-                        case 'p': (*boardPtr).whitePawns |= (Bitboard)1 << shiftCount; shiftCount++; break;
-                        case 'n': (*boardPtr).whiteKnights |= (Bitboard)1 << shiftCount; shiftCount++; break;
-                        case 'b': (*boardPtr).whiteBishops |= (Bitboard)1 << shiftCount; shiftCount++; break;
-                        case 'r': (*boardPtr).whiteRooks |= (Bitboard)1 << shiftCount; shiftCount++; break;
-                        case 'q': (*boardPtr).whiteQueens |= (Bitboard)1 << shiftCount; shiftCount++; break;
-                        case 'k': (*boardPtr).whiteKing |= (Bitboard)1 << shiftCount; shiftCount++; break;
-                        case 'P': (*boardPtr).blackPawns |= (Bitboard)1 << shiftCount; shiftCount++; break;
-                        case 'N': (*boardPtr).blackKnights |= (Bitboard)1 << shiftCount; shiftCount++; break;
-                        case 'B': (*boardPtr).blackBishops |= (Bitboard)1 << shiftCount; shiftCount++; break;
-                        case 'R': (*boardPtr).blackRooks |= (Bitboard)1 << shiftCount; shiftCount++; break;
-                        case 'Q': (*boardPtr).blackQueens |= (Bitboard)1 << shiftCount; shiftCount++; break;
-                        case 'K': (*boardPtr).blackKing |= (Bitboard)1 << shiftCount; shiftCount++; break;
-                        case '/': break;
-                    }
-                }
-                break;
-
-            // Player to move
-            case (1):
-                for (int j = 0; j < (*it).length(); j++)
-                {
-                    switch ((*it)[j])
-                    {
-                        case 'b': (*boardPtr).activePlayer = activePlayerBlack; break;
-                        case 'w': (*boardPtr).activePlayer = activePlayerWhite; break;
-                    }
-                }
-            
-            // Castling rights
-            case (2):
-                for (int k = 0; k < (*it).length(); k++)
-                {
-                    switch ((*it)[k])
-                    {
-                        case 'K': (*boardPtr).blackCanCastleKS = true; break;
-                        case 'Q': (*boardPtr).blackCanCastleQS = true; break;
-                        case 'k': (*boardPtr).whiteCanCastleKS = true; break;
-                        case 'q': (*boardPtr).whiteCanCastleQS = true; break;
-                        case '-': break;
-                    }
-                }
-
-            // TODO: Enpassant move played
-            case (3):
-                break;
-
-            // TODO: Moves since 50 move rule reset
-            case (4): 
-                break;
-
-            // Number of turns
-            case (5):
-                (*boardPtr).turns = std::stoi(*it);
+            case '8': shiftCount += 8; break;
+            case '7': shiftCount += 7; break;
+            case '6': shiftCount += 6; break;
+            case '5': shiftCount += 5; break;
+            case '4': shiftCount += 4; break;
+            case '3': shiftCount += 3; break;
+            case '2': shiftCount += 2; break;
+            case '1': shiftCount += 1; break;
+            case 'P': (*boardPtr).whitePawns |= 0x8000000000000000 >> 8*((int)shiftCount/8) + (7 - (shiftCount % 8)); shiftCount++; break;
+            case 'N': (*boardPtr).whiteKnights |= 0x8000000000000000 >> 8*((int)shiftCount/8) + (7 - (shiftCount % 8)); shiftCount++; break;
+            case 'B': (*boardPtr).whiteBishops |= 0x8000000000000000 >> 8*((int)shiftCount/8) + (7 - (shiftCount % 8)); shiftCount++; break;
+            case 'R': (*boardPtr).whiteRooks |= 0x8000000000000000 >> 8*((int)shiftCount/8) + (7 - (shiftCount % 8)); shiftCount++; break;
+            case 'Q': (*boardPtr).whiteQueens |= 0x8000000000000000 >> 8*((int)shiftCount/8) + (7 - (shiftCount % 8)); shiftCount++; break;
+            case 'K': (*boardPtr).whiteKing |= 0x8000000000000000 >> 8*((int)shiftCount/8) + (7 - (shiftCount % 8)); shiftCount++; break;
+            case 'p': (*boardPtr).blackPawns |= 0x8000000000000000 >> 8*((int)shiftCount/8) + (7 - (shiftCount % 8)); shiftCount++; break;
+            case 'n': (*boardPtr).blackKnights |= 0x8000000000000000 >> 8*((int)shiftCount/8) + (7 - (shiftCount % 8)); shiftCount++; break;
+            case 'b': (*boardPtr).blackBishops |= 0x8000000000000000 >> 8*((int)shiftCount/8) + (7 - (shiftCount % 8)); shiftCount++; break;
+            case 'r': (*boardPtr).blackRooks |= 0x8000000000000000 >> 8*((int)shiftCount/8) + (7 - (shiftCount % 8)); shiftCount++; break;
+            case 'q': (*boardPtr).blackQueens |= 0x8000000000000000 >> 8*((int)shiftCount/8) + (7 - (shiftCount % 8)); shiftCount++; break;
+            case 'k': (*boardPtr).blackKing |= 0x8000000000000000 >> 8*((int)shiftCount/8) + (7 - (shiftCount % 8)); shiftCount++; break;
+            case '/': break;
+        }
+    }
+    
+    // Set the player to move and consume whitespace
+    stream >> token;
+    (*boardPtr).activePlayer = (token == 'w' ? activePlayerWhite : activePlayerBlack);
+    stream >> token;
+    
+    // Castling rights
+    while (stream >> token, token != ' ')
+    {
+        switch (token)
+        {
+            case 'K': (*boardPtr).blackCanCastleKS = true; break;
+            case 'Q': (*boardPtr).blackCanCastleQS = true; break;
+            case 'k': (*boardPtr).whiteCanCastleKS = true; break;
+            case 'q': (*boardPtr).whiteCanCastleQS = true; break;
+            case '-': break;
         }
     }
 
-    argumentsIndex++;
+    // Enpassant move played
+    while (stream >> token, token != ' ')
+    {
+        (*boardPtr).enPassantAvailable = token;
+    }
+    
+    // Moves since 50 move rule reset and turn count
+    stream >> std::skipws >> (*boardPtr).fmrCount >> (*boardPtr).turns;
 }
 
-
-
-
 // Set up a position from startpos or fen
-void setBoard(Board* boardPtr, std::istringstream &stream)
+void setBoard(Board* boardPtr, std::istringstream& stream)
 {
     // Parse the first argument
-    std::string argument;
-    stream >> argument;
+    std::string token;
+    stream >> token;
 
     // Two cases: startpos or fen
-    if (argument == "startpos")
+    if (token == "startpos")
     {
+        std::cout << getStartSquare("d6a4") << " " << getEndSquare("a2h5") << std::endl;
+
+
+
         // Ignore the 'moves' argument
-        stream >> argument;
+        stream >> token;
 
         // Parse and make moves
         std::string moveStr;
@@ -181,9 +153,10 @@ void setBoard(Board* boardPtr, std::istringstream &stream)
             makeMove(boardPtr, movePtr);
         }
     }
-    else if (argument == "fen")
+    else if (token == "fen")
     {
         parseFen(boardPtr, stream);
+        std::list<Move*>* moveList = generateMoves(boardPtr);
     }
 }
 
