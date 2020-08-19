@@ -59,7 +59,9 @@ void generatePawnMoves(Board* boardPtr, std::list<Move*>* moveListPtr)
                 (*moveListPtr).push_back(movePtr);
             }
 
-            // Check for pawn pushes (including checks and checkmates)
+            // Check for single pawn pushes
+
+            // Check for double pawn pushes
 
             
             

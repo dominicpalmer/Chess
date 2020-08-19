@@ -130,10 +130,6 @@ void setBoard(Board* boardPtr, std::istringstream& stream)
     // Two cases: startpos or fen
     if (token == "startpos")
     {
-        std::cout << getStartSquare("d6a4") << " " << getEndSquare("a2h5") << std::endl;
-
-
-
         // Ignore the 'moves' argument
         stream >> token;
 
