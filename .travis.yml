@@ -1,0 +1,16 @@
+language: cpp
+compiler: g++
+os: windows
+
+branches:
+  only:
+    - master
+
+before_script:
+  - cd src
+
+script:
+- mingw32-make planet
+
+after_success:
+  - echo 'Passed'

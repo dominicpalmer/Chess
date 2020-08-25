@@ -1,6 +1,5 @@
 planet: main.o uci.o board.o move.o
 	g++ main.o uci.o board.o move.o -o planet -std=c++17
-	del *.o
 
 main.o: main.cpp
 	g++ -c -g main.cpp -std=c++17
