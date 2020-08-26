@@ -1,5 +1,5 @@
-#include "board.h"
-#include "move.h"
+#include "board.hpp"
+#include "move.hpp"
 #include <iostream>
 #include <vector>
 #include <iterator>

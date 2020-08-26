@@ -10,7 +10,10 @@ before_script:
   - cd src
 
 script:
-- mingw32-make planet
+  - mingw32-make planet
 
 after_success:
   - echo 'Passed'
+
+after_failure:
+  - echo 'Failed'

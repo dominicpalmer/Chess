@@ -4,7 +4,7 @@
     August 2020
 */
 
-#include "uci.h"
+#include "uci.hpp"
 
 int main(int argc, char *argv[]) 
 {

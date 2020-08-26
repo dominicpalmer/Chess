@@ -4,13 +4,13 @@ planet: main.o uci.o board.o move.o
 main.o: main.cpp
 	g++ -c -g main.cpp -std=c++17
 
-uci.o: uci.cpp uci.h
+uci.o: uci.cpp uci.hpp
 	g++ -c -g uci.cpp -std=c++17
 
-board.o: board.cpp board.h
+board.o: board.cpp board.hpp
 	g++ -c -g board.cpp -std=c++17
 
-move.o: move.cpp move.h
+move.o: move.cpp move.hpp
 	g++ -c -g move.cpp -std=c++17
 
 clean:

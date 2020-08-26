@@ -1,7 +1,7 @@
 #ifndef MOVES_H_
 #define MOVES_H_
 
-#include "board.h"
+#include "board.hpp"
 #include <string>
 #include <list>
 
